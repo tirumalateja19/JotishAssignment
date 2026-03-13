@@ -18,7 +18,7 @@ const Login = () => {
     if (validUser) {
       setLoggedUser(validUser);
       localStorage.setItem("loggedUser", JSON.stringify(validUser));
-      navigate("/details");
+      navigate("/list");
     } else {
       alert("Invalid Username or Password");
     }

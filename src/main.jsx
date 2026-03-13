@@ -6,11 +6,29 @@ import ProtectedRoute from "./components/auth/ProtectedRouting.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import Login from "./components/auth/login.jsx";
 import Dashboard from "./components/pages/Dashboard.jsx";
+import List from "./components/pages/List.jsx";
+import Details from "./components/pages/Details.jsx";
 
 const appRouter = createBrowserRouter([
   { path: "/", element: <Login /> },
   {
-    path: "/details",
+    path: "/list",
+    element: (
+      <ProtectedRoute>
+        <List />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/details/:id",
+    element: (
+      <ProtectedRoute>
+        <Details />
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/dashboard",
     element: (
       <ProtectedRoute>
         <Dashboard />
