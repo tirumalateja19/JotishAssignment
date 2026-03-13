@@ -1,11 +1,13 @@
 import { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { getLocalStorage } from "../utils/localStorage";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const { setLoggedUser } = useContext(AuthContext);
   const [user, setUser] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
   const SubmitHandler = (e) => {
     e.preventDefault();
     const { admin } = getLocalStorage();
@@ -16,7 +18,7 @@ const Login = () => {
     if (validUser) {
       setLoggedUser(validUser);
       localStorage.setItem("loggedUser", JSON.stringify(validUser));
-      alert("Login Successful");
+      navigate("/details");
     } else {
       alert("Invalid Username or Password");
     }
