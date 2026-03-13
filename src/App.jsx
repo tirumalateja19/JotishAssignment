@@ -1,9 +1,10 @@
 import React from "react";
+import Login from "./components/login/login";
 
 const App = () => {
   return (
     <div>
-      <h1 className="text-3xl font-bold underline">Hello Jotish</h1>
+      <Login />
     </div>
   );
 };
