@@ -2,10 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router";
 
+const itemHeight = 50;
+const windowHeight = 500;
+const overscan = 10;
+
 const List = () => {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
+  const [scrollTop, setScrollTop] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+
   const navigate = useNavigate();
 
   const URL = "https://backend.jotish.in/backend_dev/gettabledata.php";
@@ -25,38 +31,77 @@ const List = () => {
       setIsLoading(false);
     }
   };
+
   useEffect(() => {
     fetchData();
   }, []);
 
   const handleDetails = (id) => {
-    console.log(id);
     navigate(`/details/${id}`, { state: { data } });
   };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>{error}</div>;
-  if (!data || data.length === 0) return <div>No data available.</div>;
+  if (!data.length) return <div>No data available.</div>;
+
+  const numberOfItems = data.length;
+
+  const startIndex = Math.max(0, Math.floor(scrollTop / itemHeight) - overscan);
+
+  let renderedNodesCount = Math.floor(windowHeight / itemHeight) + 2 * overscan;
+
+  renderedNodesCount = Math.min(numberOfItems - startIndex, renderedNodesCount);
+
+  const visibleRows = [];
+
+  for (let i = 0; i < renderedNodesCount; i++) {
+    const index = startIndex + i;
+    const emp = data[index];
+
+    visibleRows.push(
+      <div
+        key={emp[3]}
+        className="p-5 grid grid-cols-7 border-b py-2 text-sm"
+        style={{ height: itemHeight }}
+      >
+        <span>{emp[0]}</span>
+        <span>{emp[1]}</span>
+        <span>{emp[2]}</span>
+        <span>{emp[3]}</span>
+        <span>{emp[4]}</span>
+        <span>{emp[5]}</span>
+
+        <button
+          className="cursor-pointer py-2 bg-amber-200 text-black font-bold"
+          onClick={() => handleDetails(emp[3])}
+        >
+          Edit
+        </button>
+      </div>,
+    );
+  }
 
   return (
-    <div>
-      <div className="p-10">
-        {data.map((emp) => (
-          <div key={emp[3]} className="grid grid-cols-7 border-b py-2 text-sm">
-            <span>{emp[0]}</span>
-            <span>{emp[1]}</span>
-            <span>{emp[2]}</span>
-            <span>{emp[3]}</span>
-            <span>{emp[4]}</span>
-            <span>{emp[5]}</span>
-            <button
-              className="cursor-pointer py-2 bg-amber-200 text-black font-bold"
-              onClick={() => handleDetails(emp[3])}
-            >
-              Edit
-            </button>
+    <div className="p-10">
+      <div
+        className="overflow-y-scroll border"
+        style={{ height: windowHeight }}
+        onScroll={(e) => setScrollTop(e.currentTarget.scrollTop)}
+      >
+        <div
+          style={{
+            height: numberOfItems * itemHeight,
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              transform: `translateY(${startIndex * itemHeight}px)`,
+            }}
+          >
+            {visibleRows}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );
