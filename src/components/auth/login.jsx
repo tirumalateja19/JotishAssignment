@@ -34,7 +34,7 @@ const Login = () => {
           SubmitHandler(e);
         }}
       >
-        <div className="flex flex-col gap-10 border-2 border-emerald-700 p-15 rounded-2xl w-[24vw]">
+        <div className="flex flex-col gap-10 border-2 border-emerald-700 p-8 sm:p-12 rounded-2xl w-full max-w-sm">
           <input
             required
             value={user}
@@ -43,7 +43,7 @@ const Login = () => {
               setUser(e.target.value);
             }}
             placeholder="Enter your Username"
-            className="outline-none bg-transparent border-2 border-emerald-300 text-white px-6 py-3 rounded-full shadow-xl "
+            className="outline-none bg-transparent border-2 border-emerald-300 text-white px-6 py-3 rounded-full shadow-xl w-full"
           ></input>
           <input
             required

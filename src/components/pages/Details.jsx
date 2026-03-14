@@ -2,13 +2,17 @@ import React, { useRef, useState } from "react";
 import Camera from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
 import { useLocation, useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
 
 function Details() {
   const [photo, setPhoto] = useState("");
-  // const [merged, setMerged] = useState("");
+  const [merged, setMerged] = useState("");
+  const { id } = useParams();
+
   const { state } = useLocation();
   const data = state?.data;
+
   const navigate = useNavigate();
 
   const sigRef = useRef(null);
@@ -18,9 +22,13 @@ function Details() {
     setPhoto(uri);
   };
 
+  const openDashboard = () => {
+    navigate("/dashboard", { state: { data } });
+  };
+
   const handleRetake = () => {
     setPhoto("");
-    // setMerged("");
+    setMerged("");
     sigRef.current?.clear();
   };
 
@@ -41,56 +49,101 @@ function Details() {
       ctx.drawImage(signatureCanvas, 0, 0, img.width, img.height);
 
       const result = canvas.toDataURL("image/png");
-      // setMerged(result);
-      navigate("/dashboard", { state: { image: result, data: data } });
+
+      setMerged(result);
     };
   };
 
   return (
-    <div className="flex flex-col items-center gap-6">
-      {!photo ? (
-        <Camera
-          onTakePhotoAnimationDone={handleTakePhotoAnimationDone}
-          isFullscreen={false}
-        />
-      ) : (
-        <>
-          <div style={{ position: "relative", display: "inline-block" }}>
-            {photo && (
+    <div className="min-h-screen bg-gray-50 p-10">
+      <div className="flex justify-end mb-6">
+        <button
+          onClick={openDashboard}
+          className="px-4 py-2 bg-red-500 text-white rounded-md cursor-grab"
+        >
+          Dashboard
+        </button>
+      </div>
+
+      <h1 className="text-3xl font-semibold text-center mb-8">
+        Capture Employee Photo
+      </h1>
+
+      {!photo && (
+        <div className="flex justify-center">
+          <Camera
+            onTakePhotoAnimationDone={handleTakePhotoAnimationDone}
+            isFullscreen={false}
+          />
+        </div>
+      )}
+
+      {photo && (
+        <div className="flex justify-center gap-16 items-start">
+          <div className="flex flex-col items-center gap-6">
+            <div className="relative border shadow-lg rounded-lg overflow-hidden m-3">
               <img
                 ref={imgRef}
                 src={photo}
                 alt="captured"
-                style={{ width: "500px", display: "block" }}
+                className="w-[500px]"
               />
-            )}
 
-            <SignatureCanvas
-              ref={sigRef}
-              penColor="red"
-              canvasProps={{
-                width: 500,
-                height: 375,
-                style: {
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  background: "transparent",
-                },
-              }}
-            />
+              <SignatureCanvas
+                ref={sigRef}
+                penColor="black"
+                canvasProps={{
+                  width: 500,
+                  height: 375,
+                  style: {
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    background: "transparent",
+                  },
+                }}
+              />
+            </div>
+
+            <div className="flex gap-6">
+              <button
+                onClick={() => sigRef.current.clear()}
+                className="px-4 py-2 bg-yellow-400 rounded"
+              >
+                Clear Signature
+              </button>
+
+              <button
+                onClick={mergeImages}
+                className="px-4 py-2 bg-green-500 text-white rounded"
+              >
+                Merge Image
+              </button>
+
+              <button
+                onClick={handleRetake}
+                className="px-4 py-2 bg-gray-400 rounded"
+              >
+                Retake
+              </button>
+            </div>
           </div>
 
-          <div className="flex gap-4">
-            <button onClick={() => sigRef.current.clear()}>
-              Clear Signature
-            </button>
-
-            <button onClick={mergeImages}>Display Merged Image</button>
-
-            <button onClick={handleRetake}>Retake Photo</button>
-          </div>
-        </>
+          {merged && (
+            <div className="bg-white shadow-lg p-3 rounded-sm">
+              <img
+                src={merged}
+                alt="merged result"
+                className="rounded border"
+                width={500}
+                height={375}
+              />
+              <h1 className="text-xl font-serif text-center py-4">
+                Audited Image of {id}
+              </h1>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

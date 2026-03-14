@@ -13,6 +13,10 @@ const List = () => {
   const [error, setError] = useState(null);
 
   const navigate = useNavigate();
+  const handleLogout = () => {
+    localStorage.removeItem("loggedUser");
+    navigate("/");
+  };
 
   const URL = "https://backend.jotish.in/backend_dev/gettabledata.php";
 
@@ -83,6 +87,17 @@ const List = () => {
 
   return (
     <div className="p-10">
+      <div className="flex items-end justify-end">
+        <button
+          onClick={handleLogout}
+          className="cursor-pointer p-2 rounded-sm bg-red-600 text-black font-bold"
+        >
+          Logout
+        </button>
+      </div>
+      <h1 className="font-semibold text-3xl text-center pb-5">
+        Custom Virtualized List
+      </h1>
       <div
         className="overflow-y-scroll border"
         style={{ height: windowHeight }}
