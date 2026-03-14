@@ -31,7 +31,7 @@ const List = () => {
 
   const handleDetails = (id) => {
     console.log(id);
-    navigate(`/details/${id}`);
+    navigate(`/details/${id}`, { state: { data } });
   };
 
   if (isLoading) return <div>Loading...</div>;

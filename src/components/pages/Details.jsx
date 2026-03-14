@@ -1,11 +1,15 @@
 import React, { useRef, useState } from "react";
 import Camera from "react-html5-camera-photo";
 import "react-html5-camera-photo/build/css/index.css";
+import { useLocation, useNavigate } from "react-router";
 import SignatureCanvas from "react-signature-canvas";
 
 function Details() {
   const [photo, setPhoto] = useState("");
-  const [merged, setMerged] = useState("");
+  // const [merged, setMerged] = useState("");
+  const { state } = useLocation();
+  const data = state?.data;
+  const navigate = useNavigate();
 
   const sigRef = useRef(null);
   const imgRef = useRef(null);
@@ -16,7 +20,7 @@ function Details() {
 
   const handleRetake = () => {
     setPhoto("");
-    setMerged("");
+    // setMerged("");
     sigRef.current?.clear();
   };
 
@@ -37,7 +41,8 @@ function Details() {
       ctx.drawImage(signatureCanvas, 0, 0, img.width, img.height);
 
       const result = canvas.toDataURL("image/png");
-      setMerged(result);
+      // setMerged(result);
+      navigate("/dashboard", { state: { image: result, data: data } });
     };
   };
 
@@ -51,12 +56,14 @@ function Details() {
       ) : (
         <>
           <div style={{ position: "relative", display: "inline-block" }}>
-            <img
-              ref={imgRef}
-              src={photo}
-              alt="captured"
-              style={{ width: "500px", display: "block" }}
-            />
+            {photo && (
+              <img
+                ref={imgRef}
+                src={photo}
+                alt="captured"
+                style={{ width: "500px", display: "block" }}
+              />
+            )}
 
             <SignatureCanvas
               ref={sigRef}
@@ -79,18 +86,11 @@ function Details() {
               Clear Signature
             </button>
 
-            <button onClick={mergeImages}>Merge Photo + Signature</button>
+            <button onClick={mergeImages}>Display Merged Image</button>
 
             <button onClick={handleRetake}>Retake Photo</button>
           </div>
         </>
-      )}
-
-      {merged && (
-        <div>
-          <h3>Final Audit Image</h3>
-          <img src={merged} alt="merged result" />
-        </div>
       )}
     </div>
   );

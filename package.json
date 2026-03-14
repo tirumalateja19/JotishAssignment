@@ -12,10 +12,12 @@
   "dependencies": {
     "@docuseal/signature-maker-react": "^1.0.2",
     "axios": "^1.13.6",
+    "leaflet": "^1.9.4",
     "prop-types": "^15.8.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-html5-camera-photo": "^1.5.11",
+    "react-leaflet": "^5.0.0",
     "react-router": "^7.13.1",
     "react-router-dom": "^7.13.1",
     "react-signature-canvas": "^1.1.0-alpha.2"
